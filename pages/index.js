@@ -9,6 +9,7 @@ import 'primeicons/primeicons.css';
 import { InputText } from 'primereact/inputtext';
 import { TabView, TabPanel } from 'primereact/tabview';
 import { InputTextarea } from 'primereact/inputtextarea';
+import { Divider } from 'primereact/divider';
 
 export default function Home() {
   const [animalInput, setAnimalInput] = useState("");
@@ -16,6 +17,8 @@ export default function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [sqlInput, setSqlInput] = useState("");
   const [resultSQL, setSqlResult] = useState();
+  const [mentorInput, setMentorInput] = useState("");
+  const [resultMentor, setMentorResult] = useState();
 
 
   async function onSubmit(event) {
@@ -45,6 +48,19 @@ export default function Home() {
     setSqlResult(data.resultSQL);
     setSqlInput("");
   }
+  async function onSubmit3(event2) {
+    event2.preventDefault();
+    const response = await fetch("/api/ementor", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ mentor: mentorInput }),
+    });
+    const data = await response.json();
+    setMentorResult(data.resultMentor);
+    setMentorInput("");
+  }
 
   return (
     <div>
@@ -58,9 +74,11 @@ export default function Home() {
           <TabPanel header="Metric Converter">
             <img src="/QPBI.png" />
             <h2>Qlik Expression to Power BI Converter</h2>
+            <div className="flex">
             <form onSubmit={onSubmit}>
-              <InputText
-                style={{ width: '1200px' }}
+              <InputTextarea
+                rows={20} cols={50}
+                autoResize
                 type="text"
                 name="animal"
                 placeholder="Enter Qlik Expression"
@@ -70,11 +88,14 @@ export default function Home() {
               <br /><br />
               <input type="submit" value="Convert" className='p-button' />
             </form><br />
+            <Divider layout="vertical" />
             <div>{result}</div>
+            </div>
           </TabPanel>
           <TabPanel header="Script Converter">
             <img src="/QSNOW.png" />
             <h2>Qlik Script to Snowflake SQL</h2>
+            <div className="flex">
             <form onSubmit={onSubmit2}>
               <InputTextarea
                 rows={20} cols={50}
@@ -87,7 +108,29 @@ export default function Home() {
               /><br /><br />
               <input type="submit" value="Convert" className='p-button' />
             </form><br />
+            <Divider layout="vertical" />
             <div>{resultSQL}</div>
+            </div>
+          </TabPanel>
+          <TabPanel header="Qlik eMentor">
+            <img src="/ementor.png" />
+            <h2>Ask Me Anything about Qlik Sense</h2>
+            <div className="flex">
+            <form onSubmit={onSubmit3}>
+              <InputTextarea
+                rows={5} cols={50}
+                autoResize
+                type="text"
+                name="ementor"
+                placeholder="How do I limit the dimension values in a chart?"
+                value={mentorInput}
+                onChange={(e) => setMentorInput(e.target.value)}
+              /><br /><br />
+              <input type="submit" value="Ask" className='p-button' />
+            </form><br />
+            <Divider layout="vertical" />
+            <div>{resultMentor}</div>
+            </div>
           </TabPanel>
         </TabView>
       </main>
