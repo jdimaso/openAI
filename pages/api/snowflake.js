@@ -7,14 +7,14 @@ const openai = new OpenAIApi(configuration);
 
 export default async function (req, res) {
   const completion = await openai.createCompletion("text-davinci-003", {
-    prompt: generatePrompt(req.body.animal),
+    prompt: generatePrompt(req.body.sql),
     temperature: 1,
     max_tokens:1000
   });
-  res.status(200).json({ result: completion.data.choices[0].text });
+  res.status(200).json({ resultSQL: completion.data.choices[0].text });
 }
 
-function generatePrompt(animal) {
+function generatePrompt(sql) {
   //const capitalizedAnimal = animal[0];
-  return `Convert this Qlik expression to a Power BI formula: ${animal}`;
+  return `Convert this Qlik script to a SQL that will work with Snowflake: ${sql}`;
 }
